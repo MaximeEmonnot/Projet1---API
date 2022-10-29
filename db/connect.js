@@ -6,7 +6,15 @@ var client = null;
 function connection(url) {
   if (client == null) {
     client = new MongoClient(url);
-    client.connect();
+    try {
+      client.connect();
+      console.log("Client successfully instantiate");
+    } catch (error) {
+      console.log("Unable to instanciate client");
+      console.log(error);
+    }
+  } else {
+    console.log("Client already instanced");
   }
 }
 
