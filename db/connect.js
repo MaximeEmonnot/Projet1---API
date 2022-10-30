@@ -3,11 +3,11 @@ const { MongoClient } = require("mongodb");
 
 var client = null;
 
-function connection(url) {
+const connection = async (url) => {
   if (client == null) {
     client = new MongoClient(url);
     try {
-      client.connect();
+      await client.connect();
       console.log("Client successfully instantiate");
     } catch (error) {
       console.log("Unable to instanciate client");
@@ -16,7 +16,7 @@ function connection(url) {
   } else {
     console.log("Client already instanced");
   }
-}
+};
 
 function getDb() {
   return client.db("Projet1_API_DB");
