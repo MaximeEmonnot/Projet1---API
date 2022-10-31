@@ -1,4 +1,3 @@
-const jwt = require("jsonwebtoken");
 const express = require("express");
 const { connection } = require("./db/connect");
 const routes = require("./route/route");
