@@ -3,6 +3,7 @@ const { addUser } = require("../controller/user");
 const { getToken, authenticateToken } = require("../controller/token");
 const router = express.Router();
 
+//Definition des routes
 router.route("/register").post(addUser);
 
 router.get("/hello", (req, res) => {
