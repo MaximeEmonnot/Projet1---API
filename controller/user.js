@@ -4,7 +4,7 @@ const client = require("../db/connect");
 
 const addUser = async (req, res) => {
   try {
-    var userExist = await isUserExist(req.body.userName, req.body.email);
+    var userAlreadyExist = await isUserExist(req.body.userName, req.body.email);
   } catch (error) {
     res.status(401).send("KO");
     console.log(error);
@@ -15,7 +15,7 @@ const addUser = async (req, res) => {
     req.body.firstName == null ||
     req.body.lastName == null ||
     req.body.password == null ||
-    userExist
+    userAlreadyExist
   ) {
     res.status(401).send("KO");
   } else {
@@ -25,7 +25,8 @@ const addUser = async (req, res) => {
         req.body.email,
         req.body.firstName,
         req.body.lastName,
-        req.body.password
+        req.body.password,
+        false
       );
 
       await client.getDb().collection("Users").insertOne(user);
