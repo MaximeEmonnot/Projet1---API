@@ -1,8 +1,9 @@
-//connexion à la base de données ici
+//Connexion à la base de données ici
 const { MongoClient } = require("mongodb");
 
 var client = null;
 
+//Connexion au serveur de la base de données
 const connection = async (url) => {
   if (client == null) {
     client = new MongoClient(url);
@@ -18,6 +19,7 @@ const connection = async (url) => {
   }
 };
 
+//Renvoie l'instance de la base de données
 function getDb() {
   return client.db("Projet1_API_DB");
 }

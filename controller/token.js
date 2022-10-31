@@ -3,6 +3,7 @@ const { findUser } = require("./user");
 
 const accessTokenSecret = "4232154665OAZKI";
 
+//Récupération du token d'authentification
 const getToken = async (req, res) => {
   if (
     (req.body.userName == null && req.body.email == null) ||
@@ -29,6 +30,7 @@ const getToken = async (req, res) => {
   }
 };
 
+//Vérification du token d'authentification
 function authenticateToken(req, res, next) {
   const authHeader = req.headers["authorization"];
   console.log(authHeader);
@@ -48,6 +50,7 @@ function authenticateToken(req, res, next) {
   });
 }
 
+//Génère un nouveau token d'authentification
 function generatAccesToken(user) {
   try {
     return jwt.sign({ user }, accessTokenSecret, {

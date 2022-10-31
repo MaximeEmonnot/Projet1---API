@@ -2,6 +2,7 @@
 const { User } = require("../model/user");
 const client = require("../db/connect");
 
+//Ajout d'un nouvel utilisateur dans la base de données
 const addUser = async (req, res) => {
   try {
     var userAlreadyExist = await isUserExist(req.body.userName, req.body.email);
@@ -39,6 +40,7 @@ const addUser = async (req, res) => {
   }
 };
 
+//Trouve un utilisateur dans la base de données avec son pseudo/email et mot de passe
 const findUser = async (userName, email, password) => {
   if (userName != null && email != null && password != null) {
     try {
@@ -84,6 +86,7 @@ const findUser = async (userName, email, password) => {
   }
 };
 
+//Regarde si un utilisateur avec le pseudo ou l'email passé en paramètre existe dans la base de données
 const isUserExist = async (userName, email) => {
   try {
     let result = await client

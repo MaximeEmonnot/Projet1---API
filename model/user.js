@@ -1,4 +1,4 @@
-//definition de la classe utilisateur ici
+//Definition de la classe utilisateur ici
 class User {
   constructor(userName, email, firstName, lastName, password, admin) {
     this.userName = userName;
