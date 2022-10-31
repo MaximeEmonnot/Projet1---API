@@ -1,6 +1,41 @@
 //Fonction d'ajout ici
+const jwt = require("jsonwebtoken");
 const { User } = require("../model/user");
 const client = require("../db/connect");
+
+const getToken = async (req, res) => {
+  if (req.body.userName != null && req.body.password != null) {
+    if (
+      await client
+        .getDb()
+        .collection("Users")
+        .countDocuments(
+          { $and: [{ userName: userName }, { password: password }] },
+          { limit: 1 }
+        )
+    ) {
+      //creer le token
+    } else {
+      res.status(500).send("Bad credential/incorect user");
+    }
+  } else if (req.body.email != null && req.body.password != null) {
+    if (
+      await client
+        .getDb()
+        .collection("Users")
+        .countDocuments(
+          { $and: [{ email: email }, { password: password }] },
+          { limit: 1 }
+        )
+    ) {
+      //creer le token
+    } else {
+      res.status(500).send("Bad credential/incorect user");
+    }
+  } else {
+    res.status(500).send("Bad credential/incorect user");
+  }
+};
 
 const addUser = async (req, res) => {
   if (
