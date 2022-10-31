@@ -3,13 +3,19 @@ const { User } = require("../model/user");
 const client = require("../db/connect");
 
 const addUser = async (req, res) => {
+  try {
+    var userExist = await isUserExist(req.body.userName, req.body.email);
+  } catch (error) {
+    res.status(401).send("KO");
+    console.log(error);
+  }
   if (
     req.body.userName == null ||
     req.body.email == null ||
     req.body.firstName == null ||
     req.body.lastName == null ||
     req.body.password == null ||
-    (await isUserExist(req.body.userName, req.body.email))
+    userExist
   ) {
     res.status(401).send("KO");
   } else {
@@ -88,7 +94,7 @@ const isUserExist = async (userName, email) => {
       );
     return result;
   } catch (error) {
-    console.log(error);
+    throw error;
   }
 };
 
