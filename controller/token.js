@@ -1,7 +1,7 @@
 const jwt = require("jsonwebtoken");
 const { findUser } = require("./user");
 
-const accessToken = "4232154665OAZKI";
+const accessTokenSecret = "4232154665OAZKI";
 
 const getToken = async (req, res) => {
   if (
@@ -38,7 +38,7 @@ function authenticateToken(req, res, next) {
     return res.sendStatus(401);
   }
 
-  jwt.verify(token, accessToken, (error, user) => {
+  jwt.verify(token, accessTokenSecret, (error, user) => {
     if (error) {
       console.log(error);
       return res.sendStatus(401);
@@ -50,7 +50,7 @@ function authenticateToken(req, res, next) {
 
 function generatAccesToken(user) {
   try {
-    return jwt.sign({ user }, accessToken, {
+    return jwt.sign({ user }, accessTokenSecret, {
       expiresIn: "1800s",
     });
   } catch (error) {
