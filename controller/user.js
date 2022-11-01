@@ -5,22 +5,16 @@ const client = require("../db/connect");
 //Ajout d'un nouvel utilisateur dans la base de données
 const addUser = async (req, res) => {
   try {
-    var userAlreadyExist = await isUserExist(req.body.userName, req.body.email);
-  } catch (error) {
-    res.status(401).send("KO");
-    console.log(error);
-  }
-  if (
-    req.body.userName == null ||
-    req.body.email == null ||
-    req.body.firstName == null ||
-    req.body.lastName == null ||
-    req.body.password == null ||
-    userAlreadyExist
-  ) {
-    res.status(401).send("KO");
-  } else {
-    try {
+    if (
+      !req.body.userName ||
+      !req.body.email ||
+      !req.body.firstName ||
+      !req.body.lastName ||
+      !req.body.password ||
+      (await isUserExist(req.body.userName, req.body.email))
+    ) {
+      res.status(500).send("KO");
+    } else {
       let user = new User(
         req.body.userName,
         req.body.email,
@@ -33,10 +27,10 @@ const addUser = async (req, res) => {
       await client.getDb().collection("Users").insertOne(user);
 
       res.status(200).send("OK");
-    } catch (error) {
-      console.log(error);
-      res.status(500).send("KO");
     }
+  } catch (error) {
+    console.log(error);
+    res.status(500).send("KO");
   }
 };
 
@@ -62,8 +56,8 @@ const getAllUser = async (req, res) => {
 
 //Trouve un utilisateur dans la base de données avec son pseudo/email et mot de passe
 const findUser = async (userName, email, password) => {
-  if (userName != null && email != null && password != null) {
-    try {
+  try {
+    if (userName && email && password) {
       let user = await client
         .getDb()
         .collection("Users")
@@ -74,11 +68,7 @@ const findUser = async (userName, email, password) => {
           ],
         });
       return user;
-    } catch (error) {
-      throw error;
-    }
-  } else if (userName != null && password != null) {
-    try {
+    } else if (userName && password) {
       let user = await client
         .getDb()
         .collection("Users")
@@ -86,11 +76,7 @@ const findUser = async (userName, email, password) => {
           $and: [{ userName: userName }, { password: password }],
         });
       return user;
-    } catch (error) {
-      throw error;
-    }
-  } else if (email != null && password != null) {
-    try {
+    } else if (email && password) {
       let user = await client
         .getDb()
         .collection("Users")
@@ -98,19 +84,19 @@ const findUser = async (userName, email, password) => {
           $and: [{ email: email }, { password: password }],
         });
       return user;
-    } catch (error) {
-      throw error;
+    } else {
+      return null;
     }
-  } else {
-    return null;
+  } catch (error) {
+    throw error;
   }
 };
 
 const getProfil = async (req, res) => {
-  var userName = req.body.userName;
-  var email = req.body.email;
-  if (userName != null && email != null) {
-    try {
+  try {
+    var userName = req.body.userName;
+    var email = req.body.email;
+    if (userName && email) {
       let users = await client
         .getDb()
         .collection("Users")
@@ -122,11 +108,7 @@ const getProfil = async (req, res) => {
       } else {
         res.status(200).send(users);
       }
-    } catch (error) {
-      res.status(500);
-    }
-  } else if (userName != null) {
-    try {
+    } else if (userName) {
       let user = await client
         .getDb()
         .collection("Users")
@@ -139,11 +121,7 @@ const getProfil = async (req, res) => {
       } else {
         res.status(200).send(user);
       }
-    } catch (error) {
-      res.status(500);
-    }
-  } else if (email != null) {
-    try {
+    } else if (email) {
       let user = await client
         .getDb()
         .collection("Users")
@@ -156,11 +134,33 @@ const getProfil = async (req, res) => {
       } else {
         res.status(200).send(user);
       }
-    } catch (error) {
-      res.status(500);
+    } else {
+      res.status(500).send("Aucun utilisateur trouvé");
     }
-  } else {
-    res.status(500).send("Aucun utilisateur trouvé");
+  } catch (error) {
+    res.status(500);
+  }
+};
+
+const removeUser = async (req, res) => {
+  try {
+    if (
+      await client
+        .getDb()
+        .collection("Users")
+        .countDocuments({ userName: req.body.userName }, { limit: 1 })
+    ) {
+      res.status(200).send("1 utilisateur supprimé");
+    } else {
+      res.status(500).send("Aucun utilisateur trouvé");
+    }
+    await client
+      .getDb()
+      .collection("Users")
+      .deleteOne({ userName: req.body.userName });
+  } catch (error) {
+    console.log(error);
+    res.status(500);
   }
 };
 
@@ -180,4 +180,4 @@ const isUserExist = async (userName, email) => {
   }
 };
 
-module.exports = { addUser, findUser, getAllUser, getProfil };
+module.exports = { addUser, findUser, getAllUser, getProfil, removeUser };
