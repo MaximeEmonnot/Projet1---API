@@ -6,6 +6,7 @@ const {
   removeUser,
 } = require("../controller/user");
 const { getToken, authenticateToken } = require("../controller/token");
+const { upload } = require("../controller/upload");
 const router = express.Router();
 
 //Definition des routes
@@ -39,6 +40,10 @@ router.post("/users/rm", authenticateToken, (req, res) => {
 
 router.post("/profil", authenticateToken, (req, res) => {
   getProfil(req, res);
+});
+
+router.post("/add-file", (req, res) => {
+  upload(req, res);
 });
 
 module.exports = router;
