@@ -106,6 +106,64 @@ const findUser = async (userName, email, password) => {
   }
 };
 
+const getProfil = async (req, res) => {
+  var userName = req.body.userName;
+  var email = req.body.email;
+  if (userName != null && email != null) {
+    try {
+      let users = await client
+        .getDb()
+        .collection("Users")
+        .find({ $or: [{ userName: userName }, { email: email }] })
+        .project({ _id: 0, password: 0, admin: 0 })
+        .toArray();
+      if (users.length == 0) {
+        res.status(500).send("Aucun utilisateur trouvé");
+      } else {
+        res.status(200).send(users);
+      }
+    } catch (error) {
+      res.status(500);
+    }
+  } else if (userName != null) {
+    try {
+      let user = await client
+        .getDb()
+        .collection("Users")
+        .findOne(
+          { userName: userName },
+          { projection: { _id: 0, password: 0, admin: 0 } }
+        );
+      if (user == null) {
+        res.status(500).send("Aucun utilisateur trouvé");
+      } else {
+        res.status(200).send(user);
+      }
+    } catch (error) {
+      res.status(500);
+    }
+  } else if (email != null) {
+    try {
+      let user = await client
+        .getDb()
+        .collection("Users")
+        .findOne(
+          { email: email },
+          { projection: { _id: 0, password: 0, admin: 0 } }
+        );
+      if (user == null) {
+        res.status(500).send("Aucun utilisateur trouvé");
+      } else {
+        res.status(200).send(user);
+      }
+    } catch (error) {
+      res.status(500);
+    }
+  } else {
+    res.status(500).send("Aucun utilisateur trouvé");
+  }
+};
+
 //Regarde si un utilisateur avec le pseudo ou l'email passé en paramètre existe dans la base de données
 const isUserExist = async (userName, email) => {
   try {
@@ -122,4 +180,4 @@ const isUserExist = async (userName, email) => {
   }
 };
 
-module.exports = { addUser, findUser, getAllUser };
+module.exports = { addUser, findUser, getAllUser, getProfil };

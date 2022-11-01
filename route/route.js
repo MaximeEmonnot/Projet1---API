@@ -1,5 +1,5 @@
 const express = require("express");
-const { addUser, getAllUser } = require("../controller/user");
+const { addUser, getAllUser, getProfil } = require("../controller/user");
 const { getToken, authenticateToken } = require("../controller/token");
 const router = express.Router();
 
@@ -22,6 +22,10 @@ router.get("/users/list", authenticateToken, (req, res) => {
   } else {
     res.status(401).send("Vous devez être admin");
   }
+});
+
+router.post("/profil", authenticateToken, (req, res) => {
+  getProfil(req, res);
 });
 
 module.exports = router;
