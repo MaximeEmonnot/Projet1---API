@@ -1,5 +1,5 @@
 const express = require("express");
-const { addUser } = require("../controller/user");
+const { addUser, getAllUser } = require("../controller/user");
 const { getToken, authenticateToken } = require("../controller/token");
 const router = express.Router();
 
@@ -15,5 +15,13 @@ router.get("/me", authenticateToken, (req, res) => {
 });
 
 router.route("/login").post(getToken);
+
+router.get("/users/list", authenticateToken, (req, res) => {
+  if (req.user.user.admin == true) {
+    getAllUser(req, res);
+  } else {
+    res.status(401).send("Vous devez être admin");
+  }
+});
 
 module.exports = router;
