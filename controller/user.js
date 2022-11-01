@@ -40,6 +40,26 @@ const addUser = async (req, res) => {
   }
 };
 
+//renvoie tous les utilisateurs de la base de données
+const getAllUser = async (req, res) => {
+  try {
+    let users = await client
+      .getDb()
+      .collection("Users")
+      .find({})
+      .project({ password: 0 })
+      .toArray();
+    if (users.length == 0) {
+      res.status(401).send("Aucun utilisateur dans la base de données");
+    } else {
+      res.status(200).send(users);
+    }
+  } catch (error) {
+    console.log(error);
+    res.status(500);
+  }
+};
+
 //Trouve un utilisateur dans la base de données avec son pseudo/email et mot de passe
 const findUser = async (userName, email, password) => {
   if (userName != null && email != null && password != null) {
@@ -102,4 +122,4 @@ const isUserExist = async (userName, email) => {
   }
 };
 
-module.exports = { addUser, findUser };
+module.exports = { addUser, findUser, getAllUser };
