@@ -1,4 +1,4 @@
-//Fonction d'ajout ici
+//Importation
 const { User } = require("../model/user");
 const client = require("../db/connect");
 
@@ -11,7 +11,7 @@ const addUser = async (req, res) => {
       !req.body.firstName ||
       !req.body.lastName ||
       !req.body.password ||
-      (await isUserExist(req.body.userName, req.body.email))
+      (await isUserExist(req.body.userName, req.body.email)) //Vérification champs vide et doublon
     ) {
       res.status(500).send("KO");
     } else {
@@ -22,9 +22,9 @@ const addUser = async (req, res) => {
         req.body.lastName,
         req.body.password,
         false
-      );
+      ); //Creation d'un nouvel objet User avec le champ admin à false
 
-      await client.getDb().collection("Users").insertOne(user);
+      await client.getDb().collection("Users").insertOne(user); //Ajout de l'utilisateur à la base de données
 
       res.status(200).send("OK");
     }
@@ -34,7 +34,7 @@ const addUser = async (req, res) => {
   }
 };
 
-//renvoie tous les utilisateurs de la base de données
+//Renvoie tous les utilisateurs de la base de données
 const getAllUser = async (req, res) => {
   try {
     let users = await client
@@ -92,6 +92,7 @@ const findUser = async (userName, email, password) => {
   }
 };
 
+//Trouve un utilisateur dans la base de données avec son pseudo/email
 const getProfil = async (req, res) => {
   try {
     var userName = req.body.userName;
@@ -142,6 +143,7 @@ const getProfil = async (req, res) => {
   }
 };
 
+//Supprime un utilisateur de la base de données avec son username
 const removeUser = async (req, res) => {
   try {
     if (

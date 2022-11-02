@@ -1,3 +1,4 @@
+//Importation
 const express = require("express");
 const {
   addUser,
@@ -7,9 +8,10 @@ const {
 } = require("../controller/user");
 const { getToken, authenticateToken } = require("../controller/token");
 const { upload } = require("../controller/upload");
-const router = express.Router();
 
 //Definition des routes
+const router = express.Router();
+
 router.route("/register").post(addUser);
 
 router.get("/hello", (req, res) => {
@@ -42,7 +44,7 @@ router.post("/profil", authenticateToken, (req, res) => {
   getProfil(req, res);
 });
 
-router.post("/add-file", (req, res) => {
+router.post("/add-file", authenticateToken, (req, res) => {
   upload(req, res);
 });
 

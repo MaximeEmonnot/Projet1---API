@@ -25,8 +25,8 @@ const getToken = async (req, res) => {
 
 //Vérification du token d'authentification
 function authenticateToken(req, res, next) {
-  const authHeader = req.headers["authorization"];
-  const token = authHeader && authHeader.split(" ")[1];
+  const authHeader = req.headers["authorization"]; //Récupère l'autorisation sous la forme : Basic <token>
+  const token = authHeader && authHeader.split(" ")[1]; // token = false si authHeader est vide sinon récupère la deuxième partie de authHeader correspondant au token
 
   if (!token) {
     return res.sendStatus(401);
@@ -36,8 +36,8 @@ function authenticateToken(req, res, next) {
     if (error) {
       console.log(error);
       return res.sendStatus(401);
-    }
-    req.user = user;
+    } //Vérifie si le token est valide
+    req.user = user; //Ajoute les informations de l'utilisateur dans le request
     next();
   });
 }
