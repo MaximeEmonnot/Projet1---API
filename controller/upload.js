@@ -1,3 +1,4 @@
+//Récupère tous les fichiers uploadés et les place dans le dossier uploads
 const upload = async (req, res) => {
   for (file in req.files) {
     await req.files[file].mv("./uploads/" + req.files[file].name, (error) => {
